@@ -19,10 +19,11 @@ class RNSecureStorage: NSObject {
     func setItem(_ key:String, value:String, options:[String:Any], resolver: RCTPromiseResolveBlock, rejecter: RCTPromiseRejectBlock){
         let accessible = options["accessible"] as! String
         let status = helper.createKeychainValue(key: key, value: value, accessible: accessible)
-        if status {
+        if status == errSecSuccess {
             resolver("Key stored successfully")
-        }else{
-            rejecter("KEY_NOT_STORED","RNSecureStorage: An error occurred during key storage", RNSecureErrors.KEY_NOT_STORED)
+        } else {
+            let errorMessage = "RNSecureStorage: An error occurred during key storage. OSStatus: \(status)"
+            rejecter("KEY_NOT_STORED", errorMessage, RNSecureErrors.KEY_NOT_STORED)
         }
     }
     

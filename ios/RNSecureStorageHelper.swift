@@ -8,7 +8,7 @@ class RNSecureStorageHelper {
     /*
      Store an item in keychain.
      */
-    func createKeychainValue(key: String, value: String, accessible:String) -> Bool {
+    func createKeychainValue(key: String, value: String, accessible:String) -> OSStatus {
         let keyData = appBundleName+"."+key
         let tag = keyData.data(using: .utf8)!
         let valData =  value.data(using: .utf8)
@@ -21,10 +21,7 @@ class RNSecureStorageHelper {
         
         SecItemDelete(query as CFDictionary)
         
-        let status = SecItemAdd(query as CFDictionary, nil)
-        
-        return status == errSecSuccess
-        
+        return SecItemAdd(query as CFDictionary, nil)
     }
     
     /*
@@ -109,7 +106,7 @@ class RNSecureStorageHelper {
         var settedPairs = 0
         for (key, value) in keyValuePairs {
             let val = self.createKeychainValue(key: key, value: value, accessible: accessible)
-            if val {
+            if val == errSecSuccess {
                 settedPairs += 1
             }
         }
